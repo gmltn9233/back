@@ -1,0 +1,30 @@
+name: PR Slack Notify
+
+on:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_USER="${{ github.event.pull_request.user.login }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          ACTION="${{ github.event.action }}"
+
+          if [ "$ACTION" == "opened" ]; then
+            TEXT="🆕 *새 Pull Request 열림!*\n*제목:* ${PR_TITLE}\n*작성자:* ${PR_USER}\n<${PR_URL}|PR 바로가기>"
+          elif [ "$ACTION" == "closed" ] && [ "${{ github.event.pull_request.merged }}" == "true" ]; then
+            TEXT="✅ *Pull Request 머지됨!*\n*제목:* ${PR_TITLE}\n*머지한 사람:* ${PR_USER}\n<${PR_URL}|PR 바로가기>"
+          else
+            TEXT="❌ Pull Request가 닫혔지만 머지되진 않았어요.\n*제목:* ${PR_TITLE}\n<${PR_URL}|PR 바로가기>"
+          fi
+
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"$TEXT\"}" \
+            "$SLACK_WEBHOOK_URL"
