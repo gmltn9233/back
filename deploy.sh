@@ -4,7 +4,7 @@ set -e  # 에러 발생 시 스크립트 즉시 종료
 # 설정
 REGION="ap-northeast-2"
 REPOSITORY="195275652706.dkr.ecr.${REGION}.amazonaws.com"
-IMAGE_NAME="${REPOSITORY}/backend:latest"
+IMAGE_NAME="${REPOSITORY}/dev-backend:latest"
 CONTAINER_NAME="spring-backend"
 PORT=8080
 
