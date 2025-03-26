@@ -25,19 +25,19 @@ jobs:
         run: |
           ./gradlew build
           docker build -t backend .
-          docker tag backend:latest 195275652706.dkr.ecr.ap-northeast-2.amazonaws.com/backend:latest
+          docker tag backend:latest 195275652706.dkr.ecr.ap-northeast-2.amazonaws.com/dev-backend:latest
           aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 195275652706.dkr.ecr.ap-northeast-2.amazonaws.com
-          docker push 195275652706.dkr.ecr.ap-northeast-2.amazonaws.com/backend:latest
+          docker push 195275652706.dkr.ecr.ap-northeast-2.amazonaws.com/dev-backend:latest
 
       - name: Zip and Upload deployment files to S3
         run: |
           zip -r deployment.zip appspec.yml deploy.sh
-          aws s3 cp deployment.zip s3://jeff-codedeploy-bucket/deployment.zip
+          aws s3 cp deployment.zip s3://jeff-codedeploy-bucket-dev/deployment.zip
 
       - name: Trigger CodeDeploy deployment from S3
         run: |
           aws deploy create-deployment \
-            --application-name Jeff-app \
+            --application-name Jeff-app-dev \
             --deployment-group-name backend-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --s3-location bucket=jeff-codedeploy-bucket,key=deployment.zip,bundleType=zip
