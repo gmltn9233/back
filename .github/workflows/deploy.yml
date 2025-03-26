@@ -40,4 +40,4 @@ jobs:
             --application-name Jeff-app-dev \
             --deployment-group-name backend-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
-            --s3-location bucket=jeff-codedeploy-bucket,key=deployment.zip,bundleType=zip
+            --s3-location bucket=jeff-codedeploy-bucket-dev,key=deployment.zip,bundleType=zip
